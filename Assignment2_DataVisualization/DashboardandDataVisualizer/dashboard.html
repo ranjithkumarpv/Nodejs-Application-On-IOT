@@ -1,0 +1,318 @@
+<html>
+<head>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+  <script src="http://cdn.oesmith.co.uk/morris-0.4.1.min.js"></script>
+  <script	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+ <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+<script type="text/javascript"
+	src="https://www.google.com/jsapi?autoload={
+    'modules':[{
+      'name':'visualization',
+      'version':'1',
+      'packages':['corechart']
+    }]
+  }">
+</script>
+<meta charset=utf-8 />
+</head>
+<body>
+
+	<!-- <div id="line-example" style="height: 250px;"></div>
+	<!-- <script>
+	Morris.Line({
+		  element: 'line-example',
+		  data: [
+		    { y: '2006', a: 25, b: 22 },
+		    { y: '2007', a: 26,  b: 22.2 },
+		    { y: '2008', a: 22,  b: 22.1 },
+		    { y: '2009', a: 21,  b: 22.3 },
+		    { y: '2010', a: 26,  b: 22.5 },
+		    { y: '2011', a: 29,  b: 22.1 },
+		    { y: '2012', a: 28, b: 22 }
+		  ],
+		  xkey: 'y',
+		  ykeys: ['a', 'b'],
+		  labels: ['Pi Temperature', 'Yahoo Temperature'],
+		  parseTime: false
+		});
+	     </script> -->
+	     
+	     
+	    <div id="chart" style="width: 1500px; height: 400px"></div>
+	<script>
+	
+    $(document).ready(function () {
+        var maxDataPoints = 10;
+        var chart = new google.visualization.LineChart($('#chart')[0]); 
+        var data = google.visualization.arrayToDataTable([ 
+            ['Time', 'Yahoo Temp','Current Temperature','Current Humidity'],
+            [getTime(), 0,0,0]
+        ]); 
+        var options = { 
+            title: 'Visualization of Environment Parameters',
+            hAxis: {title: 'Time', titleTextStyle: {color: '#333'}}, //Added hAxis and vAxis label
+            vAxis: {title: 'temp and humidity Value',  minValue: 0, titleTextStyle: {color: '#333'}},
+            curveType: 'function',
+            animation: {
+                duration: 1000,
+                easing: 'in'
+            },
+            legend: {position: 'bottom'}
+        };
+        function addDataPoint(dataPoint) { 
+        	console.log(dataPoint.value);
+            if (data.getNumberOfRows() > maxDataPoints) {
+                data.removeRow(0);
+            }
+            data.addRow([getTime(), dataPoint.value,dataPoint.value1,dataPoint.value2]);
+            min=dataPoint.value3;
+            max=dataPoint.value4;
+            avg=dataPoint.value5;
+            chart.draw(data, options); 
+        }
+        function getTime() {
+            var d = new Date();
+            return d.toLocaleTimeString();
+        }
+        var socket = io.connect('http://localhost:8686');
+		  socket.on('sensorData', function (data) {		    
+		    console.log(data);
+		   // var data1 = JSON.parse(data)
+		    //socket.emit('my other event', { my: 'data' });
+		    addDataPoint(data); //JSON.parse(data)
+		   // addvalue(data);
+		  });
+       /*  function doPoll() { 
+            $.getJSON('http://localhost:8686/temperatureData',
+                        function (result) {
+            	        //console.log(result);
+                        addDataPoint(result); 
+                        setTimeout(doPoll,5000);
+                    });
+            }
+        doPoll(); */
+       
+    });
+	    </script> 
+	    
+	   <!--  
+	    -----------------------------------------------
+	    
+	       <div id="chart3" style="width: 1500px; height: 400px"></div>
+	<script>
+	
+    $(document).ready(function () {
+        var maxDataPoints = 10;
+        var chart = new google.visualization.LineChart($('#chart3')[0]); 
+        var data = google.visualization.arrayToDataTable([ 
+            ['Time', 'Yahoo Temp','Current Temperature','Current Humidity'],
+            [getTime(), 0,0,0]
+        ]); 
+        var options = { 
+            title: 'Visualization of Environment Parameters',
+            hAxis: {title: 'Time', titleTextStyle: {color: '#333'}}, //Added hAxis and vAxis label
+            vAxis: {title: 'temp and humidity Value',  minValue: 0, titleTextStyle: {color: '#333'}},
+            curveType: 'function',
+            animation: {
+                duration: 1000,
+                easing: 'in'
+            },
+            legend: {position: 'bottom'}
+        };
+        function addDataPoint(dataPoint) { 
+        	console.log(dataPoint.value);
+            if (data.getNumberOfRows() > maxDataPoints) {
+                data.removeRow(0);
+            }
+            data.addRow([getTime(), dataPoint.value,dataPoint.value1,dataPoint.value2]);
+            min=dataPoint.value3;
+            max=dataPoint.value4;
+            avg=dataPoint.value5;
+            chart.draw(data, options); 
+        }
+        function getTime() {
+            var d = new Date();
+            return d.toLocaleTimeString();
+        }
+        var socket = io.connect('http://10.140.169.50:9091');
+		  socket.on('sensorData1', function (data) {		    
+		    console.log(data);
+		   // var data1 = JSON.parse(data)
+		    //socket.emit('my other event', { my: 'data' });
+		    addDataPoint(data); //JSON.parse(data)
+		   // addvalue(data);
+		  });
+       /*  function doPoll() { 
+            $.getJSON('http://localhost:8686/temperatureData',
+                        function (result) {
+            	        //console.log(result);
+                        addDataPoint(result); 
+                        setTimeout(doPoll,5000);
+                    });
+            }
+        doPoll(); */
+       
+    });
+	    </script> 
+	    
+	    
+	    -----------------------------------------------
+	    
+	       <div id="chart2" style="width: 1500px; height: 400px"></div>
+	<script>
+	
+    $(document).ready(function () {
+        var maxDataPoints = 10;
+        var chart = new google.visualization.LineChart($('#chart2')[0]); 
+        var data = google.visualization.arrayToDataTable([ 
+            ['Time', 'Yahoo Temp','Current Temperature','Current Humidity'],
+            [getTime(), 0,0,0]
+        ]); 
+        var options = { 
+            title: 'Visualization of Environment Parameters',
+            hAxis: {title: 'Time', titleTextStyle: {color: '#333'}}, //Added hAxis and vAxis label
+            vAxis: {title: 'temp and humidity Value',  minValue: 0, titleTextStyle: {color: '#333'}},
+            curveType: 'function',
+            animation: {
+                duration: 1000,
+                easing: 'in'
+            },
+            legend: {position: 'bottom'}
+        };
+        function addDataPoint(dataPoint) { 
+        	console.log(dataPoint.value);
+            if (data.getNumberOfRows() > maxDataPoints) {
+                data.removeRow(0);
+            }
+            data.addRow([getTime(), dataPoint.value,dataPoint.value1,dataPoint.value2]);
+            min=dataPoint.value3;
+            max=dataPoint.value4;
+            avg=dataPoint.value5;
+            chart.draw(data, options); 
+        }
+        function getTime() {
+            var d = new Date();
+            return d.toLocaleTimeString();
+        }
+        var socket = io.connect('http://10.140.169.50:9092');
+		  socket.on('sensorData1', function (data) {		    
+		    console.log(data);
+		   // var data1 = JSON.parse(data)
+		    //socket.emit('my other event', { my: 'data' });
+		    addDataPoint(data); //JSON.parse(data)
+		   // addvalue(data);
+		  });
+       /*  function doPoll() { 
+            $.getJSON('http://localhost:8686/temperatureData',
+                        function (result) {
+            	        //console.log(result);
+                        addDataPoint(result); 
+                        setTimeout(doPoll,5000);
+                    });
+            }
+        doPoll(); */
+       
+    });
+	    </script> 
+	    
+	    --------------------------------------------- -->
+	    
+	 <div id="piechart" style="width: 1500px; height: 700px"></div>
+	<script>
+	
+    $(document).ready(function () {
+    	var maxDataPoints = 3;
+       var chart = new google.visualization.PieChart($('#piechart')[0]); 
+        var data = google.visualization.arrayToDataTable([ 
+['Parameter', 'Measurement'],
+['Min Temp',0],
+['Max Temp',0],
+['Avg Temp',0]
+]); 
+        var options = { 
+            title: 'Visualization of Environment Parameters'
+          /*   hAxis: {title: 'Time', titleTextStyle: {color: '#333'}}, //Added hAxis and vAxis label
+            vAxis: {title: 'temp and humidity Value',  minValue: 0, titleTextStyle: {color: '#333'}},
+            curveType: 'function',
+            animation: {
+                duration: 1000,
+                easing: 'in'
+            },
+            legend: {position: 'bottom'} */
+        };
+        function addDataPoint(dataPoint) { 
+        	console.log(data.getNumberOfRows());
+        	 if (data.getNumberOfRows() > maxDataPoints) {
+              //  data.removeColumn(0);
+               /*  data.removeRow(1);
+                data.removeRow(2);  */   
+        		 data.removeRow(0);
+        		 data.removeRow(1);
+        		 data.removeRow(2);
+                
+        	} 
+        	 
+         //   data.addColumn([['Min Temp',dataPoint.value],['Max Temp',dataPoint.value1],['Avg Temp',dataPoint.value2]]);
+              data.addRow(['Max Temp',dataPoint.value]);
+            data.addRow(['Min Temp',dataPoint.value1]);
+            data.addRow(['Avg Temp',dataPoint.value2]); 
+           // data.removeRow(0);
+           //  data.removeRow(1);
+           // data.removeRow(2);
+            chart.draw(data, options); 
+            data.removeRow(0);
+   		    data.removeRow(1);
+   		    data.removeRow(2);
+            /* data.removeRow(0);
+            data.removeRow(1);
+            data.removeRow(2); */
+            
+            
+        }
+        
+        var socket = io.connect('http://10.140.169.50:8686');
+		  socket.on('sensorData', function (data) {		    
+		  //  console.log(data);
+		   // var data1 = JSON.parse(data)
+		    //socket.emit('my other event', { my: 'data' });
+		    addDataPoint(data); //JSON.parse(data)
+		   // addvalue(data);
+		  });
+       /*  function doPoll() { 
+            $.getJSON('http://localhost:8686/temperatureData',
+                        function (result) {
+            	        //console.log(result);
+                        addDataPoint(result); 
+                        setTimeout(doPoll,5000);
+                    });
+            }
+        doPoll(); */
+       
+    });
+	    </script>
+	    
+	    
+	    
+	    
+	     
+	   <!--   <script>
+	     <div id="donut-example" style="height: 250px;"></div>
+	     function addvalue(dataPoint) { 
+	    	 Morris.Donut({
+				  element: 'donut-example',
+				  data: [
+				    {label: "Min Temp", value: 22},
+				    {label: "Avg Temp", value: 21},
+				    {label: "Max Temp", value: 23}
+				  ]
+				});
+	          /*   min=dataPoint.value3;
+	            max=dataPoint.value4;
+	            avg=dataPoint.value5;
+	            */
+	        }
+		
+	</script> -->
+</body>
+</html>
